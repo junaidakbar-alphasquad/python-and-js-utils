@@ -2,10 +2,10 @@ import os
 from pathlib import Path
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+import json
 
 # Directory containing the images
 directory_path = './webp_images'
-# directory_path = './webp_images'
 
 # URL of the upload endpoint
 upload_url = "https://sse.monkeytilt.codes/cdn/file-upload/upload"  # Make sure to include the http:// or https://
@@ -36,7 +36,7 @@ else:
                 try:
                     response_data = response.json()
                     print(f"Success: {response_data}")
-                except requests.exceptions.JSONDecodeError:
+                except json.JSONDecodeError:
                     print(f"Success: {response.text}")
             else:
                 print(f"Error uploading file {file}: {response.status_code} - {response.text}")

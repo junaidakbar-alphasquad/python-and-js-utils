@@ -62,7 +62,7 @@ def update_json(data):
 
 # File paths
 # base_dir = "./messages/"
-base_dir = "../../monkeytilt/frontend/real_money/app/messages"
+base_dir = "../monkeytilt/frontend/real_money/app/messages"
 
 source_dir = "./newKeys"
 
@@ -83,25 +83,31 @@ filenames1 = [
 #    'newKeys_zho-CN.json'
 ]
 
-filenames = [
-    "en-ca.json",
-    "ar-sa.json",
-    "fr-ca.json",
-    "fr-fr.json",
-    "hi-in.json",
-    "ja-jp.json",
-    "ko-kr.json",
-    "pt-br.json",
-    "ru-ru.json",
-    "es-mx.json",
-    "fil-ph.json",
-    "tr-tr.json",
-    "vi-vn.json",
-    "zh-cn.json",
-]
+filenames =['es-mx.json', 
+            'ja-jp.json', 
+            'vi.json', 
+            'tl.json', 
+            'en-ca.json', 
+            'en.json', 
+            'fr.json', 
+            'es.json', 
+            'en-in.json', 
+            'zh.json', 
+            'ko.json', 
+            'hi-in.json', 
+            'tr.json', 
+            'ar.json', 
+            'en-jp.json', 
+            'fr-ca.json', 
+            'en-nz.json', 
+            'es-ar.json', 
+            'ru.json', 
+            'en-ie.json', 
+            'pt-br.json']
 
 # Process each target file
-file_path1 = os.path.join(base_dir, filenames1[0])
+file_path1 = os.path.join(base_dir, 
+            filenames1[0])
 file1 = read_json_file(file_path1)
 sorted_file1 = sort_keys(file1)
 for i, file in enumerate(filenames):
