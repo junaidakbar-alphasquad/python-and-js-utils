@@ -28,14 +28,43 @@ def read_json_file(file_path):
         exit(1)
 
 # Function to inject missing keys
-def inject_missing_keys(source, target):
+def update_keys_values(source, target):
     for key, value in source.items():
         if isinstance(value, dict):
-            target[key] = inject_missing_keys(value, target.get(key, {}))
+            target[key] = update_keys_values(value, target.get(key, {}))
         else:
             target[key] = value
     return target
+def inject_missing_keys(source, target):
+    for key, value in source.items():
+        if isinstance(value, dict):
+            # Recursively inject missing keys for nested dictionaries
+            if key in target and isinstance(target[key], dict):
+                target[key] = inject_missing_keys(value, target[key])
+            else:
+                target[key] = inject_missing_keys(value, {})
+        else:
+            if key not in target:
+                target[key] = value
+    return target
+def delete_non_matching_keys(source, target):
+    # Create a list of keys to delete from the target
+    keys_to_delete = [key for key in target if key not in source]
 
+    # Delete the keys from the target
+    for key in keys_to_delete:
+        del target[key]
+
+    for key, value in source.items():
+        if isinstance(value, dict):
+            if key in target and isinstance(target[key], dict):
+                # Recursively delete non-matching keys for nested dictionaries
+                target[key] = delete_non_matching_keys(value, target[key])
+            else:
+                # If the key is missing or not a dictionary in target, create an empty dictionary
+                target[key] = delete_non_matching_keys(value, {})
+                
+    return target
 # Function to replace <Link> tags with <a> tags and add target="_blank"
 def replace_link_tags(value):
     link_pattern = re.compile(r'<Link([^>]*)>(.*?)<\/Link>', re.IGNORECASE)
@@ -59,9 +88,6 @@ def update_json(data):
     elif isinstance(data, dict):
         return {key: update_json(value) for key, value in data.items()}
     return data
-
-# File paths
-# base_dir = "./messages/"
 base_dir = "../monkeytilt/frontend/real_money/app/messages"
 
 source_dir = "./newKeys"
@@ -113,23 +139,13 @@ sorted_file1 = sort_keys(file1)
 for i, file in enumerate(filenames):
     file_path2 = os.path.join(base_dir, file)
     file2 = read_json_file(file_path2)
-    sorted_file2 = sort_keys(file2)
-    # st1 =  sorted_file2["offers"]["cards"]["casino"]["list"]
-    # # sorted_file2["celebrity"]["cards"]["casino"]["list"]=st1
-    # st2 = sorted_file2["offers"]["cards"]["sports"]["list"]
-    # st1 =  st1.replace('</li>', '').replace('100', '150').replace('200', '300').replace('500', '1000').split('<li>')
-    # st2 =  st2.replace('</li>', '').replace('100', '150').replace('200', '300').split('<li>')
-    # # st2 = st2.replace('</li>', '').split('<li>')
-
-    # # Filter out any empty strings
-    # st1 = [item for item in st1 if item]
-    # st2 = [item for item in st2 if item]
-    # # Assign the updated strings back to the dictionary
-    # # del sorted_file2["celebrity"]["cards"]["copaList"]
-    # del sorted_file2["userProfile"]["vipStatus"] 
-    # =
-    # sorted_file2["vipStatus"]["vipProgress"]
+    sorted_file2 = sort_keys(file2)    
+    # Inject missing keys that are not present in file 2 and added in file 1
     sorted_file2 = inject_missing_keys(sorted_file1, sorted_file2)
+    # Update already exiting key
+    # sorted_file2 = update_keys_values(sorted_file1, sorted_file2)
+    # Delete keys present in file2 and not in file one
+    # sorted_file2 = delete_non_matching_keys(sorted_file1, sorted_file2)
     sorted_file2 = sort_keys(sorted_file2)
     
     with open(file_path2, "w", encoding="utf-8") as outfile:
