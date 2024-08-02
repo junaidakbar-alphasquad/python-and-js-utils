@@ -27,7 +27,6 @@ def read_json_file(file_path):
         print(f"Error reading or parsing file at {file_path}: {err}")
         exit(1)
 
-# Function to inject missing keys
 def update_keys_values(source, target):
     for key, value in source.items():
         if isinstance(value, dict):
@@ -35,6 +34,7 @@ def update_keys_values(source, target):
         else:
             target[key] = value
     return target
+
 def inject_missing_keys(source, target):
     for key, value in source.items():
         if isinstance(value, dict):
@@ -47,6 +47,7 @@ def inject_missing_keys(source, target):
             if key not in target:
                 target[key] = value
     return target
+
 def delete_non_matching_keys(source, target):
     # Create a list of keys to delete from the target
     keys_to_delete = [key for key in target if key not in source]
@@ -65,6 +66,7 @@ def delete_non_matching_keys(source, target):
                 target[key] = delete_non_matching_keys(value, {})
                 
     return target
+
 # Function to replace <Link> tags with <a> tags and add target="_blank"
 def replace_link_tags(value):
     link_pattern = re.compile(r'<Link([^>]*)>(.*?)<\/Link>', re.IGNORECASE)
@@ -88,66 +90,67 @@ def update_json(data):
     elif isinstance(data, dict):
         return {key: update_json(value) for key, value in data.items()}
     return data
+# base directory for file2 array
 base_dir = "../monkeytilt/frontend/real_money/app/messages"
-
+# sour directory for file1 array
 source_dir = "./newKeys"
 
-filenames1 = [
-    "en-ca.json",
-#    'newKeys_ara.json', 
-#    'newKeys_fre-CA.json',
-#    'newKeys_fre.json', 
-#    'newKeys_hin.json',
-#    'newKeys_jpn.json',
-#    'newKeys_kor.json',
-#    'newKeys_por-BR.json',
-#    'newKeys_rus.json',
-#    'newKeys_spa-M9.json',
-#    'newKeys_tgl.json',
-#    'newKeys_tur.json',
-#    'newKeys_vie.json',
-#    'newKeys_zho-CN.json'
-]
+filenames1 = ["en-ca.json"]
 
-filenames =['es-mx.json', 
-            'ja-jp.json', 
-            'vi.json', 
-            'tl.json', 
-            'en-ca.json', 
-            'en.json', 
-            'fr.json', 
-            'es.json', 
-            'en-in.json', 
-            'zh.json', 
-            'ko.json', 
-            'hi-in.json', 
-            'tr.json', 
-            'ar.json', 
-            'en-jp.json', 
-            'fr-ca.json', 
-            'en-nz.json', 
-            'es-ar.json', 
-            'ru.json', 
-            'en-ie.json', 
-            'pt-br.json']
-
+filenames =[
+    'es-mx.json', 
+    'ja-jp.json', 
+    'vi.json', 
+    'tl.json', 
+    'en-ca.json', 
+    'en.json', 
+    'fr.json', 
+    'es.json', 
+    'en-in.json', 
+    'zh.json', 
+    'ko.json', 
+    'hi-in.json', 
+    'tr.json', 
+    'ar.json', 
+    'en-jp.json', 
+    'fr-ca.json', 
+    'en-nz.json', 
+    'es-ar.json', 
+    'ru.json', 
+    'en-ie.json', 
+    'pt-br.json'
+    ]
+def custom(file1,file2):
+    """add login based on your requirement you want to replace any content in file 2 from file1 
+    or you want to add some key of file2 in another file2 key like file2[key1][key2]=file2[key3][key4]"""
+    # file2["metaData"]=file1["metaData"]
+    return file2
 # Process each target file
-file_path1 = os.path.join(base_dir, 
-            filenames1[0])
+file_path1 = os.path.join(base_dir,filenames1[0])
 file1 = read_json_file(file_path1)
 sorted_file1 = sort_keys(file1)
 for i, file in enumerate(filenames):
     file_path2 = os.path.join(base_dir, file)
     file2 = read_json_file(file_path2)
     sorted_file2 = sort_keys(file2)    
+    
+    # custom logic creator for file 2 return
+    sorted_file2 =custom(sorted_file1,sorted_file2)
+    
     # Inject missing keys that are not present in file 2 and added in file 1
-    sorted_file2 = inject_missing_keys(sorted_file1, sorted_file2)
+    # sorted_file2 = inject_missing_keys(sorted_file1, sorted_file2)
+    
     # Update already exiting key
     # sorted_file2 = update_keys_values(sorted_file1, sorted_file2)
+    
     # Delete keys present in file2 and not in file one
     # sorted_file2 = delete_non_matching_keys(sorted_file1, sorted_file2)
-    sorted_file2 = sort_keys(sorted_file2)
     
+    # if the files have Link tags to replace those with a tag and target blank
+    # sorted_file2 = update_json(sorted_file2)
+    
+    #  Sort it again to sort newly added keys
+    sorted_file2 = sort_keys(sorted_file2)
     with open(file_path2, "w", encoding="utf-8") as outfile:
         json.dump(sorted_file2, outfile, ensure_ascii=False, indent=2)
     
