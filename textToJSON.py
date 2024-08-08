@@ -1,7 +1,7 @@
 import json
 
 # Read the raw text from the input file
-input_file_path = './Untitled-1.txt'
+input_file_path = './text.txt'
 output_file_path = 'output_jsonfile.json'
 
 with open(input_file_path, 'r', encoding='utf-8') as file:

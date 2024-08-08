@@ -7,6 +7,7 @@ def is_object(value):
     return isinstance(value, dict)
 
 def sort_keys(data):
+    # return data
     if is_object(data):
         sorted_data = {}
         keys = sorted(data.keys(), key=lambda k: (not isinstance(data[k], str), k.lower()))
@@ -95,38 +96,43 @@ base_dir = "../monkeytilt/frontend/real_money/app/messages"
 # sour directory for file1 array
 source_dir = "./newKeys"
 
-filenames1 = ["en-ca.json"]
+filenames1 = ["en.json"]
 
 filenames =[
     'es-mx.json', 
-    'ja-jp.json', 
-    'vi.json', 
-    'tl.json', 
-    'en-ca.json', 
-    'en.json', 
-    'fr.json', 
     'es.json', 
-    'en-in.json', 
-    'zh.json', 
-    'ko.json', 
-    'hi-in.json', 
-    'tr.json', 
-    'ar.json', 
-    'en-jp.json', 
-    'fr-ca.json', 
-    'en-nz.json', 
     'es-ar.json', 
-    'ru.json', 
+    'en.json', 
+    'en-ca.json', 
+    'en-in.json', 
+    'en-jp.json', 
+    'en-nz.json', 
     'en-ie.json', 
-    'pt-br.json'
+    'ja-jp.json', 
+    'tl.json', 
+    'fr.json', 
+    'hi-in.json', 
+    'ko.json', 
+    'fr-ca.json', 
+    'ar.json', 
+    'pt-br.json',
+    'ru.json', 
+    'tr.json', 
+    'vi.json', 
+    'zh.json', 
     ]
 def custom(file1,file2):
-    """add login based on your requirement you want to replace any content in file 2 from file1 
+    """add logic based on your requirement you want to replace any content in file 2 from file1 
     or you want to add some key of file2 in another file2 key like file2[key1][key2]=file2[key3][key4]"""
-    # file2["metaData"]=file1["metaData"]
+    try:
+        file2["metaData"]["self-exclusion"]["title"]="الاستبعاد الذاتي | Monkey Tilt | كازينو كبار الشخصيات"
+        file2["metaData"]["self-exclusion"]["description"]="انقر هنا للحصول على معلومات حول الاستبعاد الذاتي"
+    except:
+        print("err")
     return file2
 # Process each target file
 file_path1 = os.path.join(base_dir,filenames1[0])
+# file_path1 = os.path.join(source_dir,filenames1[0])
 file1 = read_json_file(file_path1)
 sorted_file1 = sort_keys(file1)
 for i, file in enumerate(filenames):
