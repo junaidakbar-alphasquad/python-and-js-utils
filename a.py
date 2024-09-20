@@ -92,7 +92,7 @@ def update_json(data):
         return {key: update_json(value) for key, value in data.items()}
     return data
 # base directory for file2 array
-base_dir = "../monkeytilt/frontend/real_money/app/messages"
+base_dir = "../rewire-monkeytilt/app/messages"
 # sour directory for file1 array
 source_dir = "./newKeys"
 
@@ -125,8 +125,7 @@ def custom(file1,file2):
     """add logic based on your requirement you want to replace any content in file 2 from file1 
     or you want to add some key of file2 in another file2 key like file2[key1][key2]=file2[key3][key4]"""
     try:
-        file2["metaData"]["self-exclusion"]["title"]="الاستبعاد الذاتي | Monkey Tilt | كازينو كبار الشخصيات"
-        file2["metaData"]["self-exclusion"]["description"]="انقر هنا للحصول على معلومات حول الاستبعاد الذاتي"
+        file2["login"]["email"]=file2["signup"]["email"]
     except:
         print("err")
     return file2
